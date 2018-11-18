@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+
+    <ul id="chat-item">
+{#    {{ reviews }}#}
+        {% for review in reviews %}
+            <li>{{ review.review }} via {{ review.user }}</li>
+        {% endfor %}
+    </ul>
+
+    <form id="review_form" method="post" >
+        <input type="hidden" id="myemail">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+        <input type="submit" class="btn btn-primary">
+    </form>
+
+    <script src="{% static 'js/reconnecting-websocket.min.js' %}"></script>
+    <script>
+        var formData = $("#review_form");
+        var loc = window.location;
+        var message = $("#id_review");
+        var chatHolder = $("#chat-item");
+
+        var wsStart = 'ws://';
+        if (loc.protocol === 'https:'){
+            wsStart = 'wss://'
+        }
+        var endpoint = wsStart + loc.host + loc.pathname;
+        var socket = new ReconnectingWebSocket(endpoint);
+
+        socket.onmessage = function(e){
+            console.log("message", e);
+            var chatDataMsg = JSON.parse(e.data);
+            console.log(chatDataMsg);
+            chatHolder.append("<li>" + chatDataMsg.message + " via " + chatDataMsg.username + "</li>");
+        };
+
+        socket.onopen = function(e){
+            console.log("open", e);
+            formData.submit(function (event) {
+                event.preventDefault();
+                var msgText = message.val();
+                // chatHolder.append("<li>" + msgText + " via " + me + "</li>")
+                var finalData = {
+                    'message': msgText
+                };
+                socket.send(JSON.stringify(finalData));
+{#                socket.send(msgText);#}
+                formData[0].reset()
+            });
+        };
+        socket.onerror = function(e){
+            console.log("error", e)
+        };
+        socket.onclose = function(e){
+            console.log("close", e)
+        };
+    </script>
+
+{% endblock %}

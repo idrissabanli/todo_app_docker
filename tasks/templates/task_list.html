@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<ul>
+    {% for task_item in task_list %}
+        <li><a href="{{ task_item.get_absolute_url }}">{{ task_item }}</a></li>
+    {% endfor %}
+</ul>
+    <br>
+    <a href="{% url 'task:create' %}">Create Task</a>
+
+{% endblock %}
