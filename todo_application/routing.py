@@ -15,7 +15,7 @@ application = ProtocolTypeRouter({
                     # url(r"^messages/(?P<email>[\w.@+-]+)/$", ChatConsumer),
                     # url(r"^photo/(?P<id>\d+)/$", CommentConsumer),
                     # path('task-reviews/<int:pk>/', CommentUser),
-                    path('task/task-detail/<slug:slug>/', CommentUser)
+                    path('task-detail/<slug:slug>/', CommentUser)
                     # re_path(r'^task-reviews/(?P<pk>\d+)/$', CommentUser)
                 ]
             )

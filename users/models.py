@@ -96,6 +96,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         """
         full_name = '%s %s' % (self.first_name, self.last_name)
         return full_name.strip()
+        # return "Salam"
+
 
     def has_perm(self, perm, obj=None):
         """Does the user have a specific permission?"""
@@ -122,7 +124,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 class Person(models.Model):
     description=models.TextField(_(u'Description'))
     user = models.OneToOneField(MyUser, related_name='person_user', on_delete=models.CASCADE)
-    group_type = models.CharField(_('Group Type'), choices=(('person', _('Person')), ('per_group', 'Person Group')),max_length=15)
+    group_type = models.CharField(_('Group Type'), choices=(('person', _('Person')), ('per_group', 'Person Group')), max_length=15)
     city = models.CharField(_('City'), max_length=100, null=True, blank=True)
     address = models.CharField(_('Address'), max_length=250, blank=False)
     phone = models.CharField(_('Phone'), max_length=40, null=True, blank=True)

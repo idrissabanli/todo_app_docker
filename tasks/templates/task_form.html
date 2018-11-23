@@ -2,10 +2,28 @@
 
 {% block body %}
 
-    <form method="post">
+
+<div class="form-taskcreate">
+<h3>Create Task Form</h3>
+    <form  method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Save">
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
     </form>
+
+
+</div>
+
+<a href="{% url 'tasks:created-tasks' %}">Go To Back</a>
+
+<style>
+	.form-taskcreate{
+		width: 100%;
+		max-width: 500px;
+		padding: 15px;
+		margin:auto;
+	}
+</style>
+
 
 {% endblock %}

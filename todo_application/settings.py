@@ -155,6 +155,16 @@ USE_TZ = True
 LOGIN_URL = reverse_lazy('login')
 LOGIN_REDIRECT_URL = reverse_lazy('task:created-tasks')
 
+LOGOUT_REDIRECT_URL = reverse_lazy('login')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'todo.application.email@gmail.com'
+EMAIL_HOST_PASSWORD = 'todo4383930'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 

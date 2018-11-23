@@ -1,8 +1,9 @@
 from django import forms
 from django.http import request
 
-from tasks.models import SharingTasks, TaskReviews
+from tasks.models import SharingTasks, TaskReviews, Tasks
 from users.models import MyUser
+import datetime
 
 ccc = [
     ('v', 'View'),
@@ -24,9 +25,25 @@ class TaskShareForm(forms.ModelForm):
         self.fields["user"].queryset = sss
 
 
+
 class TaskReviewForm(forms.ModelForm):
-    review = forms.CharField()
+    review = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
 
     class Meta:
         model = TaskReviews
         exclude = ['task', 'user', 'ord', 'is_published']
+
+
+
+class TaskForm(forms.ModelForm):
+    title = forms.CharField(required=True,
+                           widget=forms.TextInput(
+                               attrs={'class': ' form-control '}),
+                           max_length=255)
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+
+    deadline = forms.DateTimeField(initial=datetime.datetime.now(), required=False, widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime'}))
+
+    class Meta: 
+        model = Tasks
+        fields = ['title', 'description', 'deadline', ]

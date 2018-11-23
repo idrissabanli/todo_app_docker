@@ -85,7 +85,7 @@ class TaskReviews(models.Model):
     class Meta:
         verbose_name = _(u'Task Review')
         verbose_name_plural = _(u'Task Reviews')
-        ordering = ('-created',)
+        ordering = ('created',)
 
     def __unicode__(self):
         return self.task.title

@@ -1,46 +1,113 @@
 {% extends 'base.html' %}
-{% load i18n static %}
+{% load i18n static core_tags %}
 {% block title %}{{ task.title }}|{% endblock %}
 {% block head %}
 
 {% endblock %}
 
 {% block body %}
+<div class="task-detail">
+
     {% if message %}
         <ul class="messages">
-            {{ message }}
+            {{ message }}   
         </ul>
     {% endif %}
 
-    {{ task.title }}
-    <br>
-    {{ task.description }}
-    <br>
-    {{ task.deadline }}
-
+    <div class="row">
+    <div class="block text-left col-md-8">
+    
+        <span style="float: right; color: #8d8a8a"> Deadline: {{ task.deadline }}</span>
+    <h4>{{ task.title }} Detail Page</h5>
+    <p>Description: {{ task.description }}</p>
+    
+<hr>
 <h4>comments</h4>
     <ul id="chat-item">
         {#    {{ reviews }}#}
         {% for review in reviews %}
-            <li>{{ review.review }} via {{ review.user }}</li>
+            <li style="margin: 6px 0px; {% if request.user == review.user %} text-align: right; {% else %} text-align: left; {% endif %}"><span class="comment">{{ review.review }} via {{ review.user }}</span></li>
         {% endfor %}
     </ul>
-
+    {% check_write_comment task request.user as write_comment_permisition %}
+{% if write_comment_permisition %}
     <form id="review_form" method="post" >
         <input type="hidden" id="myemail">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" class="btn btn-primary">
+        <hr>
+        <input type="submit" class="btn btn-primary" value="Send">
     </form>
+    {% endif %}
+    <a href="{% url 'tasks:created-tasks' %}">GO TO Created</a>
+</div>
 
+
+{% if task.created_by == request.user %}
+<div class="second-block col-md-4">
     <form method="post">
         {% csrf_token %}
         {% for field in share_form %}
-            {{ field.label }}{{ field }}
+        <div class="row">
+            {{ field.label }}:
+            {{ field }}
+        </div>
         {% endfor %}
         <input type="submit" value="Share">
-
     </form>
+</div>
+{% endif %}
+
+</div>
+
+
+<style>
+    #chat-item{
+        list-style-type: none!important;
+    }
+    #review_form{
+        display: flex;
+    }
+
+    .task-detail{
+        width: 100%;
+        max-width: 1000px;
+        padding: 80px 10px 10px 15px;
+        margin:auto;
+    }
+
+    #id_sharing_type{
+        display: inline-flex;
+        list-style-type: none;
+    }
+    .block{
+        border:1px solid #ded4d4;
+        background-color: #fff;
+        border-radius: 15px;
+        padding: 30px 30px;
+        margin: 5px;
+		max-width: 650px;
+    }
+    .second-block {
+        border:1px solid #ded4d4;
+        background-color: #fff;
+        border-radius: 15px;
+        padding: 30px 30px;
+        margin: 5px;
+        max-width: 650px;
+        max-height: 200px;
+    }
+    .comment{
+        min-width: 40%;
+        display: inline-flex;
+        padding: 2px 9px;
+        border: 1px solid #d4d2d2;
+        box-shadow: 1px 1px #b4b4b4;
+        border-radius: 5px;
+        max-width: 70%;
+        text-align: left;
+    }
+</style>
 
     <script src="{% static 'js/reconnecting-websocket.min.js' %}"></script>
     <script>
@@ -48,19 +115,26 @@
         var loc = window.location;
         var message = $("#id_review");
         var chatHolder = $("#chat-item");
+        var user = "{{ request.user }}";
 
         var wsStart = 'ws://';
         if (loc.protocol === 'https:'){
             wsStart = 'wss://'
         }
+
         var endpoint = wsStart + loc.host + loc.pathname;
         var socket = new ReconnectingWebSocket(endpoint);
-
+        var textalign = "text-align: left";
         socket.onmessage = function(e){
-            console.log("message", e);
+        	console.log("message", e);
             var chatDataMsg = JSON.parse(e.data);
-            console.log(chatDataMsg);
-            chatHolder.append("<li>" + chatDataMsg.message + " via " + chatDataMsg.username + "</li>");
+            if(user === chatDataMsg.username){
+            	textalign = "right";
+            }else{
+            	textalign = "left";
+            }
+            
+            chatHolder.append("<li style ='margin: 6px 0px; text-align: "+ textalign + "'><span class='comment'>" + chatDataMsg.message + " via " + chatDataMsg.username + "</span></li>");
         };
 
         socket.onopen = function(e){
@@ -74,7 +148,7 @@
                 };
                 socket.send(JSON.stringify(finalData));
                 {#                socket.send(msgText);#}
-                formData[0].reset()
+                formData[0].reset();
             });
         };
         socket.onerror = function(e){

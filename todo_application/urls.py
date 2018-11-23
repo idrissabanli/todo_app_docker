@@ -21,6 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', auth_views.LoginView.as_view(), name="login"),
     path('logout/', auth_views.LogoutView.as_view(), name="logout"),
-    path('task/', include('tasks.urls', namespace='task')),
-    path('', include('core.urls', namespace='core')),
+    path('', include('tasks.urls', namespace='task')),
 ]
