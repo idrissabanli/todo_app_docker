@@ -26,7 +26,7 @@
     <ul id="chat-item">
         {#    {{ reviews }}#}
         {% for review in reviews %}
-            <li style="margin: 6px 0px; {% if request.user == review.user %} text-align: right; {% else %} text-align: left; {% endif %}"><span class="comment">{{ review.review }} via {{ review.user }}  {% if request.user == review.user %} <i class='fa fa-angle-down' style="float: right" onclick="changeComment('{{review.id}}')" aria-hidden='true'></i> {% endif %}</span></li>
+            <li style="margin: 6px 0px; {% if request.user == review.user %} text-align: right; {% else %} text-align: left; {% endif %}"><span class="comment">{{ review.review }} via {{ review.user }}<i class='fa fa-angle-down' style="float: right" onclick="changeComment('{{review.id}}')" aria-hidden='true'></i></span></li>
         {% endfor %}
     </ul>
     {% check_write_comment task request.user as write_comment_permisition %}
@@ -59,15 +59,6 @@
 {% endif %}
 
 </div>
-
-
-<!-- The Modal -->
-<div id="myModal" class="modal">
-
-
-
-</div>
-
 
 
 <style>
@@ -139,7 +130,7 @@
             var chatDataMsg = JSON.parse(e.data);
             if(user === chatDataMsg.username){
                 textalign = "right";
-                chatHolder.append("<li style ='margin: 6px 0px; text-align: "+ textalign + "'><span class='comment'>" + chatDataMsg.message + " via " + chatDataMsg.username + "<i class='fa fa-angle-down' onclick='changeComment(" + chatDataMsg.review_id + ")' aria-hidden='true'></i></span></li>");
+                chatHolder.append("<li style ='margin: 6px 0px; text-align: "+ textalign + "'><span class='comment'>" + chatDataMsg.message + " via " + chatDataMsg.username + "<i class='fa fa-angle-down' onclick='changeComment('1')' aria-hidden='true'></i></span></li>");
             }else{
                 textalign = "left";
                 chatHolder.append("<li style ='margin: 6px 0px; text-align: "+ textalign + "'><span class='comment'>" + chatDataMsg.message + " via " + chatDataMsg.username + "</span></li>");
@@ -169,69 +160,16 @@
         };
     </script>
 
-<style>
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
-
-/* The Close Button */
-.close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-}
-</style>
-
 <script>
-    // Get the modal
-    var modal = document.getElementById('myModal');
-
-    
-    
-    function changeComment(id){
-        $.ajax({
-                url: "{% url 'task:change_review' %}" + "?id="+id
-            }).then(function(data) {
-                $('#myModal').html(data);
-                modal.style.display = "block";
-            });
-    }
-
-
-    
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+    function changeComment(id) {
+        var txt;
+        var person = prompt("Change Comment:", "");
+        if (person == null || person == "") {
+            txt = "User cancelled the prompt.";
+        } else {
+            txt = "Hello " + person + "! How are you today?";
         }
+        alert(txt);
     }
     </script>
 

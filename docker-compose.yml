@@ -46,7 +46,7 @@ services:
     container_name: todo
     build: .
     restart: "always"
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: gunicorn -c gunicorn.conf todo_application.wsgi
     env_file: .env
     volumes:
       - .:/code
@@ -54,4 +54,17 @@ services:
       - "8000:8000"
     depends_on:
       - "postgres"
+
+
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    depends_on: 
+      - web
+    command: [nginx-debug, '-g', 'daemon off;']
+    ports:
+      - "80:80"
+    volumes:
+      - ./MDC/static:/var/lib/static
+      - ./MDC/static:/var/lib/media
 

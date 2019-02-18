@@ -32,7 +32,8 @@ class Tasks(models.Model):
         return reverse('tasks:created-task-detail', kwargs={'slug': self.slug})
 
     def get_reviews(self, slug):
-        return TaskReviews.objects.filter(task__slug=slug)
+        return self.reviews.all()
+        # return TaskReviews.objects.filter(task__slug=slug)
 
     def __unicode__(self):
         return self.title

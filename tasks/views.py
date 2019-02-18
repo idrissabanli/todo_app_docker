@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, render_to_response
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, FormView
@@ -43,6 +43,21 @@ class TaskList(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
+class Change_Review(FormView):
+    model = TaskReviews
+    form_class = TaskReviewForm
+    template_name = 'edit_review.html'
+    
+    def get(self, request, *args, **kwargs):
+        task = self.model.objects.get(id=self.request.GET['id'])
+        form = self.form_class(request.POST or None, instance=task)
+        return self.render_to_response(self.get_context_data(form=form))
+            
+    def get_context_data(self, **kwargs):
+        return kwargs
+
+
+@method_decorator(login_required, name='dispatch')
 class CreatedTaskDetail(FormMixin, DetailView):
     model = Tasks
     template_name = 'task_detail.html'
@@ -61,10 +76,10 @@ class CreatedTaskDetail(FormMixin, DetailView):
                                                                           defaults={'sharing_type': sharing_type})
 
             if created:
-                send_mail('Todo Application', self.request.user.first_name + self.request.user.last_name + ' shared ' + task.title + ' task with you - Todo Application', settings.EMAIL_HOST_USER, [user.email], fail_silently=False,)
+                # send_mail('Todo Application', self.request.user.first_name + self.request.user.last_name + ' shared ' + task.title + ' task with you - Todo Application', settings.EMAIL_HOST_USER, [user.email], fail_silently=False,)
                 return HttpResponse('Sharing created')
             else:
-                send_mail('Todo Application', 'Shared Task' + task.title + 'changed - Todo Application', settings.EMAIL_HOST_USER, [user.email], fail_silently=False,)
+                # send_mail('Todo Application', 'Shared Task' + task.title + 'changed - Todo Application', settings.EMAIL_HOST_USER, [user.email], fail_silently=False,)
                 return HttpResponse('Sharing updated')
 
     def post(self, request, *args, **kwargs):

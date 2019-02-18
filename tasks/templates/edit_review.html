@@ -1,0 +1,20 @@
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <form id="change_review_form" method="post" >
+        <input type="hidden" id="myemail">
+        {% csrf_token %}
+        {{ form.as_p }}
+    </form>
+    <button >Change</button>
+    <button >Delete</button>
+  </div>
+  <script>
+      
+    // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+            // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+  </script>

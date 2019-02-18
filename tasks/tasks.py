@@ -9,8 +9,6 @@ from django.conf import settings
 
 @periodic_task(run_every=(crontab(minute='*/1')), name="some_task", ignore_result=True)
 def some_task():
-	# user = User.objects.get(id=check_deadline_end(datetime.now))
-	# print('dealine', datetime.timedelta(seconds=900))
 	print('date', timezone.now())
 	sharing_list = []
 	tasks = Tasks.objects.filter(deadline__range=(timezone.now() + datetime.timedelta(seconds=600), timezone.now() + datetime.timedelta(seconds=660)))
